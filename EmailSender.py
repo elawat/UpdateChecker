@@ -4,24 +4,24 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 class Email:
-    senderaddress = None
-    senderpassword = None
+    sender_address = None
+    sender_password = None
     body = 'no body text'
-    recipientaddress = []
+    recipient_address = []
     subject = 'no subject'
 
 
-def sendgmail(emaildetails):
+def sendgmail(email_details):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
-    server.login(emaildetails.senderaddress, emaildetails.senderpassword)
+    server.login(email_details.senderaddress, email_details.senderpassword)
     msg = MIMEMultipart()
-    message = emaildetails.body
+    message = email_details.body
 
-    msg['From']=emaildetails.senderaddress
-    recipients = ', '.join(emaildetails.recipientaddress)
+    msg['From']=email_details.senderaddress
+    recipients = ', '.join(email_details.recipientaddress)
     msg['To']=recipients
-    msg['Subject']=emaildetails.subject
+    msg['Subject']=email_details.subject
     msg.attach(MIMEText(message, 'plain'))
     server.send_message(msg)

@@ -7,31 +7,29 @@ import json
 
 
 def Main():
-    gmailfile = r'C:\Users\elawa\PycharmProjects\UpdateFilesChecker\gmail.json'
-    details = Parameters
+    config_file = 'configs.json'
+    params = Parameters
     epoch = datetime.utcfromtimestamp(0)
-    details.date_when_update_expired = (datetime.today() + timedelta(days=1) - epoch).total_seconds()
-    details.folder_path = r'C:\Users\elawa\Desktop\test'
-    details.file_name_pattern = '[aA-zZ]{2}ADS.xlsx'
+    email_details = Email
+    configs = json.loads(open(config_file).read())
+    days_diff = int(configs['days'])
+    params.date_when_update_expired = (datetime.today() - timedelta(days=days_diff) - epoch).total_seconds()
+    params.folder_path = configs['folderPath']
+    params.file_name_pattern = configs['pattern']
 
-    checker = UpdateChecker(details)
+    checker = UpdateChecker(params)
     files_not_updated = ['{}, {}'.format(file.name, file.last_modified_date)
                          for file in checker.GetNotUpdatedFiles()]
 
     if files_not_updated:
-        emaildetails = Email
-        credentials = json.loads(open(gmailfile).read())
-        emaildetails.senderpassword = credentials['password']
-        emaildetails.senderaddress = credentials['address']
-        emaildetails.recipientaddress = credentials['recipient'].split(',')
-        emaildetails.body = '\n'.join(files_not_updated)
-        emaildetails.subject = 'ADS not updated'
-        sendgmail(emaildetails)
-
-
+        email_details.senderpassword = configs['password']
+        email_details.senderaddress = configs['address']
+        email_details.recipientaddress = configs['recipient'].split(',')
+        email_details.body = '\n'.join(files_not_updated)
+        email_details.subject = 'ADS not updated'
+        sendgmail(email_details)
 
 
 Main()
-
 
 
