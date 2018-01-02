@@ -4,6 +4,8 @@ from FileDirScanner import FileDirScanner
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from time import strftime, localtime
+
 
 
 def sendgmail(email_details):
@@ -36,7 +38,7 @@ def check_ads_updates():
     params = {'folder_path': configs['folderPath'], 'name_pattern': configs['pattern'],
               'date_when_update_expired': (datetime.today() - timedelta(days=days_diff) - epoch).total_seconds()}
 
-    files_not_updated = ['{}, {}'.format(file.name, file.last_modified_date)
+    files_not_updated = ['{}, {}'.format(file.name, strftime("%a, %d %b %Y %H:%M:%S", localtime(file.last_modified_date)))
                          for file in get_not_updated_files(params)]
 
     if files_not_updated:
